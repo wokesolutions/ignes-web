@@ -568,13 +568,13 @@ class LogIn extends React.Component {
 
                                 <form name="sentMessage" id="singupForm">
                                     <div className="form-group floating-label-form-group controls">
-                                        <label class="register">Username </label> <input type="text" className="form-control"
+                                        <label className="register">Username </label> <input type="text" className="form-control"
                                                                                          placeholder="Username (*)" id="username" required
                                                                                          data-validation-required-message="Please enter your name."/>
 
                                     </div>
                                     <div className="form-group floating-label-form-group controls">
-                                        <label class="register">Password</label> <input type="password"
+                                        <label className="register">Password</label> <input type="password"
                                                                                         className="form-control" placeholder="Password (*)" id="password"
                                                                                         required
                                                                                         data-validation-required-message="Please enter your password."/>
@@ -962,11 +962,11 @@ class Report extends React.Component{
                         <a className = "navbar-brand js-scroll-trigger"  id ="expBrand" href="#page-top"> Ignes </a>
                         <div className="collapse navbar-collapse" id="navbarResponsive">
                             <ul className="navbar-nav ml-auto">
-                                <li className="nav-item"><a className="nav-link js-scroll-trigger" id = "expText" href="#quemsomos"><i className="fa fa-user"> </i>  Perfil</a></li>
-                                <li className="nav-item"><a className="nav-link js-scroll-trigger" id = "expText" href="#oquefazemos"><i className="fa fa-newspaper-o"> </i>  Feed</a></li>
-                                <li className="nav-item"><a className="nav-link js-scroll-trigger" id = "expText"  href="#junte"><i className="	fa fa-map-o"> </i>  Mapa</a></li>
-                                <li className="nav-item"><a className="nav-link js-scroll-trigger" id = "expText" href ="" onClick={registerOc} ><i className="fa fa-map-marker"> </i>  Reportar</a></li>
-                                <li className="nav-item"><a className="nav-link js-scroll-trigger" id = "expText" href="#footer"><i className="	fa fa-comments-o"> </i>   Espaçinho das Dicas do Vizinho</a></li>
+                                <li className="nav-item pointer-finger"><a className="nav-link js-scroll-trigger" id = "expText" href="#quemsomos"><i className="fa fa-user"> </i>  Perfil</a></li>
+                                <li className="nav-item pointer-finger"><a className="nav-link js-scroll-trigger" id = "expText" href="#oquefazemos"><i className="fa fa-newspaper-o"> </i>  Feed</a></li>
+                                <li className="nav-item pointer-finger"><a className="nav-link js-scroll-trigger" id = "expText"  ><i className="	fa fa-map-o"> </i>  Mapa</a></li>
+                                <li className="nav-item pointer-finger"><a className="nav-link js-scroll-trigger" id = "expText" onClick={registerOc} ><i className="fa fa-map-marker"> </i>  Reportar</a></li>
+                                <li className="nav-item pointer-finger"><a className="nav-link js-scroll-trigger" id = "expText" href="#footer"><i className="	fa fa-comments-o"> </i>   Espaçinho das Dicas do Vizinho</a></li>
                                 <li className="nav-item pointer-finger"><a className="nav-link js-scroll-trigger"id = "expText"  ><i className="fa fa-phone"> </i>  Contactos</a></li>
                                 <li className="nav-item pointer-finger"><a className="nav-link js-scroll-trigger"id = "expText" ><i className="	fa fa-wrench"> </i>  Definições</a></li>
                                 <li className="nav-item pointer-finger"><a className="nav-link js-scroll-trigger"id = "expText"  onClick={logOut}><i className="fa fa-power-off"> </i>  Terminar Sessão</a></li>
