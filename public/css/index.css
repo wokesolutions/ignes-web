@@ -211,8 +211,8 @@ footer a{
 #iconMarker {
     font-size: 6rem;
     color:#AD363B;
-    margin-top: 3rem;
-    margin-bottom: 3rem;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
 }
 #thisform{
     margin-top: 2rem;
@@ -228,6 +228,7 @@ footer a{
     border-radius: 15px;
     background-color: #AD363B;
     border-color: #AD363B;
+
 }
 
 .btn-circle.btn-xl {
@@ -254,4 +255,17 @@ footer a{
     border: 1px solid blue;
     background: red;
     color: yellow;
+}
+
+#efectone{
+    font-family: "Quicksand Bold";
+}
+
+#efecttwo{
+    font-family: "Quicksand Bold";
+    color:#AD363B;
+}
+
+#iconcheck{
+    color: white;
 }

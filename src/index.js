@@ -3,7 +3,10 @@ import ReactDOM from 'react-dom';
 import $ from 'jquery';
 import GoogleMapReact from 'google-map-react';
 import Slider from 'react-rangeslider';
-import 'react-rangeslider/lib/index.css'
+import 'react-rangeslider/lib/index.css';
+import Geocode from "react-geocode";
+
+Geocode.setApiKey("AIzaSyAfHsLp6fKLK4YZ2WSoXO0KsM58Clspg8k");
 
 const AnyReactComponent = ({ text }) => <div>{text}</div>;
 
@@ -71,7 +74,7 @@ class Horizontal extends React.Component {
                 />
                 <div class="row">
                     <div class="col-lg-8 mx-lg-auto text-center">
-                        <div className='value'>{value}</div>
+                        <p id="efectone">Gravidade do Reporte<div className='value' id="efecttwo">{value}</div></p>
                     </div>
                 </div>
             </div>
@@ -899,6 +902,16 @@ class InitPage extends React.Component {
 
 class Dashboard extends React.Component{
     componentDidMount(){
+        Geocode.fromAddress("Eiffel Tower").then(
+            response => {
+                const { lat, lng } = response.results[0].geometry.location;
+                console.log(lat, lng);
+            },
+            error => {
+                console.error(error);
+            }
+        );
+
         ReactDOM.render(<SimpleMap/> , document.getElementById("map"));
     }
     render() {
@@ -951,6 +964,51 @@ class Dashboard extends React.Component{
 }
 
 class Report extends React.Component{
+    addReport(){
+        var titulo = document.getElementById('titulo').value;
+        var morada = document.getElementById('morada').value;
+        var descricao = document.getElementById('descricao').value;
+        var gravidade = document.getElementById('range').value;
+        var img;
+        var lat;
+        var lng;
+
+        fetch('https://hardy-scarab-200218.appspot.com/api/report/create', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': localStorage.getItem('token')
+            },
+            body: JSON.stringify({
+                report_lat: lat,
+                report_lng: lng,
+                report_img: img,
+                report_title: titulo,
+                report_descricao: descricao,
+                report_gravity: gravidade
+            })
+        }).then(function(response) {
+
+                if (response.status === 200) {
+                    console.log(localStorage.length);
+                    var auth = response.headers.get('Authorization');
+                    console.log(auth);
+                    localStorage.setItem('token', auth);
+                    alert(localStorage.getItem('token'));
+                    console.log(localStorage.length);
+                    console.log(localStorage.length);
+                    ReactDOM.render(<Dashboard/> , document.getElementById("root"));
+                }
+
+            }
+        )
+            .catch(function(err) {
+                console.log('Fetch Error', err);
+            });
+
+    }
+
     componentDidMount(){
         ReactDOM.render(<Horizontal/> , document.getElementById("range"));
     }
@@ -964,7 +1022,7 @@ class Report extends React.Component{
                             <ul className="navbar-nav ml-auto">
                                 <li className="nav-item pointer-finger"><a className="nav-link js-scroll-trigger" id = "expText" href="#quemsomos"><i className="fa fa-user"> </i>  Perfil</a></li>
                                 <li className="nav-item pointer-finger"><a className="nav-link js-scroll-trigger" id = "expText" href="#oquefazemos"><i className="fa fa-newspaper-o"> </i>  Feed</a></li>
-                                <li className="nav-item pointer-finger"><a className="nav-link js-scroll-trigger" id = "expText"  ><i className="	fa fa-map-o"> </i>  Mapa</a></li>
+                                <li className="nav-item pointer-finger"><a className="nav-link js-scroll-trigger" id = "expText"  ><i className="fa fa-map-o"> </i>  Mapa</a></li>
                                 <li className="nav-item pointer-finger"><a className="nav-link js-scroll-trigger" id = "expText" onClick={registerOc} ><i className="fa fa-map-marker"> </i>  Reportar</a></li>
                                 <li className="nav-item pointer-finger"><a className="nav-link js-scroll-trigger" id = "expText" href="#footer"><i className="	fa fa-comments-o"> </i>   Espaçinho das Dicas do Vizinho</a></li>
                                 <li className="nav-item pointer-finger"><a className="nav-link js-scroll-trigger"id = "expText"  ><i className="fa fa-phone"> </i>  Contactos</a></li>
@@ -974,8 +1032,6 @@ class Report extends React.Component{
                         </div>
                     </div>
                 </nav>
-
-
                 <section className ="login">
                     <div className="container">
                         <div className="row">
@@ -987,20 +1043,24 @@ class Report extends React.Component{
                                     </div>
                                     <div className="col-lg-2 col-md-2 mx-auto"></div>
                                 </div>
-
+                                <div class="row">
+                                    <div class="col-lg-8 mx-lg-auto">
+                                        <div id="range"/>
+                                    </div>
+                                </div>
                                 <form name="sentMessage" id="singupForm">
                                     <div className="form-group floating-label-form-group controls text-center">
                                         <label >Titulo </label> <input type="text" className="form-control"
-                                                                       placeholder="Titulo (*)" id="username"/>
+                                                                       placeholder="Titulo (*)" id="titulo"/>
 
                                     </div>
                                     <div className="form-group floating-label-form-group controls text-center" id="thisform">
                                         <label >Morada</label> <input type="text"
-                                                                      className="form-control" placeholder="Morada (*)" />
+                                                                      className="form-control" placeholder="Morada (*)" id="morada"/>
                                     </div>
                                     <div className="form-group floating-label-form-group controls text-center" id="thisform">
                                         <label >Descrição</label> <input type="text"
-                                                                         className="form-control" placeholder="Descrição (*)"/>
+                                                                         className="form-control" placeholder="Descrição (*)" id="descricao"/>
                                     </div>
                                     <div className="form-group floating-label-form-group controls text-center" id="thisform">
                                         <label >Upload Fotografia</label>
@@ -1015,15 +1075,8 @@ class Report extends React.Component{
                                     </div>
 
                                     <div class="row">
-                                        <div class="col-lg-8 mx-lg-auto">
-                                            <div id="range"/>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-lg-8 mx-lg-auto">
-
-                                            <button type="button" class="btn btn-success btn-circle btn-xl"><i className="fa fa-check"> </i> </button>
+                                        <div class="col-lg-12 mx-lg-auto text-center">
+                                            <button type="button" class="btn btn-circle btn-xl"><i className="fa fa-check" id="iconcheck"> </i> </button>
                                         </div>
                                     </div>
 
@@ -1086,6 +1139,14 @@ function regAccountWorker(){
 }
 
 function registerOc(){
+    ReactDOM.render(<Report/> , document.getElementById("root"));
+}
+
+function registerOc(){
+    ReactDOM.render(<Report/> , document.getElementById("root"));
+}
+
+function map(){
     ReactDOM.render(<Report/> , document.getElementById("root"));
 }
 

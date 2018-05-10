@@ -7,6 +7,7 @@
     "jquery": "^3.3.1",
     "react": "^16.3.1",
     "react-dom": "^16.3.1",
+    "react-geocode": "0.0.7",
     "react-google-maps": "^9.4.5",
     "react-rangeslider": "^2.2.0",
     "react-scripts": "1.1.4",
