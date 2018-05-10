@@ -1,9 +1,37 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import $ from 'jquery';
-//import Cookies from 'universal-cookie';
+import GoogleMapReact from 'google-map-react';
 
-//var cookies = new Cookies();
+const AnyReactComponent = ({ text }) => <div>{text}</div>;
+
+class SimpleMap extends React.Component {
+    static defaultProps = {
+        center: {
+            lat: 59.95,
+            lng: 30.33
+        },
+        zoom: 11
+    };
+
+    render() {
+        return (
+            <div style={{ height: '70vh', width: '100%' }}>
+                <GoogleMapReact
+                    bootstrapURLKeys={{ key:"AIzaSyAfHsLp6fKLK4YZ2WSoXO0KsM58Clspg8k"}}
+                    defaultCenter={this.props.center}
+                    defaultZoom={this.props.zoom}
+                >
+                    <AnyReactComponent
+                        lat={59.955413}
+                        lng={30.337844}
+                        text={'Kreyser Avrora'}
+                    />
+                </GoogleMapReact>
+            </div>
+        );
+    }
+}
 
 class RegWorker extends React.Component  {
     register(){
@@ -434,6 +462,7 @@ class LogIn extends React.Component {
         var logPassword = document.getElementById("password").value;
 
         if(logPassword !== "" && logUsername !== "") {
+
             console.log(localStorage.length);
             fetch('https://hardy-scarab-200218.appspot.com/api/login', {
                 method: 'POST',
@@ -449,9 +478,16 @@ class LogIn extends React.Component {
 
                     if (response.status === 200) {
                         console.log(localStorage.length);
-                        var auth = response.headers.get('authorization');
+                        var auth = response.headers.get('Authorization');
+                        console.log(auth);
                         localStorage.setItem('token', auth);
                         //cookies.set('token', auth, { path: '/' });
+                        //alert(cookies.getAll('token', {doNotParse:true}));
+                        alert(localStorage.getItem('token'));
+                        console.log(localStorage.length);
+                        //localStorage.removeItem('token');
+                        console.log(localStorage.length);
+                        ReactDOM.render(<Dashboard/> , document.getElementById("root"));
                     }
 
                 }
@@ -461,25 +497,9 @@ class LogIn extends React.Component {
                 });
 
 
-            //alert(cookies.getAll('token', {doNotParse:true}));
-            alert(localStorage.getItem('token'));
-            console.log(localStorage.length);
-            ReactDOM.render(<LogIn/> , document.getElementById("root"));
         }
         else
             alert("Username or password do not exist.")
-
-        fetch('https://hardy-scarab-200218.appspot.com/api/logout', {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + localStorage.getItem('token')
-            }
-        })
-        localStorage.removeItem('token');
-        console.log(localStorage.length);
-
 
     }
 
@@ -505,16 +525,16 @@ class LogIn extends React.Component {
 
                                 <form name="sentMessage" id="singupForm">
                                     <div className="form-group floating-label-form-group controls">
-                                        <label>Username </label> <input type="text" className="form-control"
-                                                                        placeholder="Username (*)" id="username" required
-                                                                        data-validation-required-message="Please enter your name."/>
+                                        <label class="register">Username </label> <input type="text" className="form-control"
+                                                                                         placeholder="Username (*)" id="username" required
+                                                                                         data-validation-required-message="Please enter your name."/>
 
                                     </div>
                                     <div className="form-group floating-label-form-group controls">
-                                        <label>Password</label> <input type="password"
-                                                                       className="form-control" placeholder="Password (*)" id="password"
-                                                                       required
-                                                                       data-validation-required-message="Please enter your password."/>
+                                        <label class="register">Password</label> <input type="password"
+                                                                                        className="form-control" placeholder="Password (*)" id="password"
+                                                                                        required
+                                                                                        data-validation-required-message="Please enter your password."/>
                                     </div>
                                 </form>
                             </div>
@@ -594,7 +614,7 @@ class InitPage extends React.Component {
             }
         });
 
-        var navbarCollapse = function() {
+        /*var navbarCollapse = function() {
             if ($("#mainNav").offset().top > 100) {
                 $("#mainNav").addClass("navbar-shrink");
             } else {
@@ -604,7 +624,7 @@ class InitPage extends React.Component {
         // Collapse now if page is not at top
         navbarCollapse();
         // Collapse the navbar when page is scrolled
-        $(window).scroll(navbarCollapse);
+        $(window).scroll(navbarCollapse);*/
     }
 
 
@@ -834,6 +854,175 @@ class InitPage extends React.Component {
 
 }
 
+class Dashboard extends React.Component{
+    componentDidMount(){
+        ReactDOM.render(<SimpleMap/> , document.getElementById("map"));
+    }
+    render() {
+        return (
+            <div>
+                <nav className="navbar navbar-expand-lg navbar-light" id = "navbarDef">
+                    <div className="container" id="cont">
+                        <a className = "navbar-brand js-scroll-trigger"  id ="expBrand" href="#page-top"> Ignes </a>
+                        <div className="collapse navbar-collapse" id="navbarResponsive">
+                            <ul className="navbar-nav ml-auto">
+                                <li className="nav-item pointer-finger"><a className="nav-link js-scroll-trigger" id = "expText" ><i className="fa fa-user"> </i>  Perfil</a></li>
+                                <li className="nav-item pointer-finger"><a className="nav-link js-scroll-trigger" id = "expText" ><i className="fa fa-newspaper-o"> </i>  Feed</a></li>
+                                <li className="nav-item pointer-finger"><a className="nav-link js-scroll-trigger" id = "expText" ><i className="fa fa-map-o"> </i>  Mapa</a></li>
+                                <li className="nav-item pointer-finger"><a className="nav-link js-scroll-trigger" id = "expText" onClick={registerOc}><i className="fa fa-map-marker"> </i>  Reportar</a></li>
+                                <li className="nav-item pointer-finger"><a className="nav-link js-scroll-trigger" id = "expText" ><i className="fa fa-comments-o"> </i>  Espaçinho das Dicas do Vizinho</a></li>
+                                <li className="nav-item pointer-finger"><a className="nav-link js-scroll-trigger"id = "expText"  ><i className="fa fa-phone"> </i>  Contactos</a></li>
+                                <li className="nav-item pointer-finger"><a className="nav-link js-scroll-trigger"id = "expText"  ><i className="fa fa-wrench"> </i>  Definições</a></li>
+                                <li className="nav-item pointer-finger"><a className="nav-link js-scroll-trigger"id = "expText"  onClick={logOut}><i className="fa fa-power-off"> </i>  Terminar Sessão</a></li>
+                            </ul>
+                        </div>
+
+                    </div>
+                </nav>
+
+
+                <div className="container">
+                    <div className="row" id="searchType">
+                        <div className ="col-lg-12 col-sm-12 text-center">
+                            <div className="form-group floating-label-form-group controls">
+                                <input type="text" className="form-control" placeholder="Inserir localização"/>
+                            </div>
+                            <button type="submit" className="btn btn-default btn-colorRed" id="centerMap"> Procurar</button>
+
+                        </div>
+                    </div>
+                </div>
+
+
+                <div className="container">
+                    <div className="row" id="searchType">
+                        <div className ="col-lg-12 col-sm-12 text-center">
+                            <div id ="map"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        )
+    }
+}
+
+class Report extends React.Component{
+    render() {
+        return (
+            <div>
+                <nav className="navbar navbar-expand-lg navbar-light" id = "navbarDef">
+                    <div className="container" id="cont">
+                        <a className = "navbar-brand js-scroll-trigger"  id ="expBrand" href="#page-top"> Ignes </a>
+                        <div className="collapse navbar-collapse" id="navbarResponsive">
+                            <ul className="navbar-nav ml-auto">
+                                <li className="nav-item"><a className="nav-link js-scroll-trigger" id = "expText" href="#quemsomos"><i className="fa fa-user"> </i>  Perfil</a></li>
+                                <li className="nav-item"><a className="nav-link js-scroll-trigger" id = "expText" href="#oquefazemos"><i className="fa fa-newspaper-o"> </i>  Feed</a></li>
+                                <li className="nav-item"><a className="nav-link js-scroll-trigger" id = "expText"  href="#junte"><i className="	fa fa-map-o"> </i>  Mapa</a></li>
+                                <li className="nav-item"><a className="nav-link js-scroll-trigger" id = "expText" href ="" onClick={registerOc} ><i className="fa fa-map-marker"> </i>  Reportar</a></li>
+                                <li className="nav-item"><a className="nav-link js-scroll-trigger" id = "expText" href="#footer"><i className="	fa fa-comments-o"> </i>   Espaçinho das Dicas do Vizinho</a></li>
+                                <li className="nav-item pointer-finger"><a className="nav-link js-scroll-trigger"id = "expText"  ><i className="fa fa-phone"> </i>  Contactos</a></li>
+                                <li className="nav-item pointer-finger"><a className="nav-link js-scroll-trigger"id = "expText" ><i className="	fa fa-wrench"> </i>  Definições</a></li>
+                                <li className="nav-item pointer-finger"><a className="nav-link js-scroll-trigger"id = "expText"  onClick={logOut}><i className="fa fa-power-off"> </i>  Terminar Sessão</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+
+
+                <section className ="login">
+                    <div className="container">
+                        <div className="row">
+                            <div className="col-lg-8 col-md-8 mx-auto">
+                                <div className="row" >
+                                    <div className="col-lg-2 col-md-2 mx-auto"></div>
+                                    <div className="col-lg-4 col-md-4 mx-auto text-center">
+                                        <i className="fa fa-map-marker" id ="iconMarker"> </i>
+                                    </div>
+                                    <div className="col-lg-2 col-md-2 mx-auto"></div>
+                                </div>
+
+                                <form name="sentMessage" id="singupForm">
+                                    <div className="form-group floating-label-form-group controls text-center">
+                                        <label >Titulo </label> <input type="text" className="form-control"
+                                                                       placeholder="Titulo (*)" id="username"/>
+
+                                    </div>
+                                    <div className="form-group floating-label-form-group controls text-center" id="thisform">
+                                        <label >Morada</label> <input type="text"
+                                                                      className="form-control" placeholder="Morada (*)" />
+                                    </div>
+                                    <div className="form-group floating-label-form-group controls text-center" id="thisform">
+                                        <label >Descrição</label> <input type="text"
+                                                                         className="form-control" placeholder="Descrição (*)"/>
+                                    </div>
+                                    <div className="form-group floating-label-form-group controls text-center" id="thisform">
+                                        <label >Upload Fotografia</label>
+                                        <div className="row">
+                                            <div className="col-lg-2 col-md-2 mx-auto"></div>
+                                            <div className="col-lg-4 col-md-4 mx-auto text-center">
+                                                <input type="file" id="imagem" name="imagem"/>
+                                            </div>
+                                            <div className="col-lg-2 col-md-2 mx-auto"></div>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-lg-8 mx-lg-auto">
+                                            <input id="range-slider" type="range" min="0" max="5" step="1" value="0"/>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-lg-8 mx-lg-auto">
+
+                                            <button type="button" class="btn btn-success btn-circle btn-xl"><i className="fa fa-check"> </i> </button>
+                                        </div>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+
+            </div>
+
+        )
+    }
+}
+
+function logOut(){
+    fetch('https://hardy-scarab-200218.appspot.com/api/logout', {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': localStorage.getItem('token')
+        }
+    }).then(function(response) {
+
+            if (response.status === 200) {
+                localStorage.removeItem('token');
+                alert(localStorage.getItem('token'));
+                init();
+            }else{
+                console.log("Tratar do Forbidden")
+            }
+
+
+        }
+    )
+        .catch(function(err) {
+            console.log('Fetch Error', err);
+        });
+
+
+
+}
+
 function regAccountCom(){
     ReactDOM.render(<RegCompany/> , document.getElementById("root"));
 }
@@ -850,18 +1039,42 @@ function regAccountWorker(){
     ReactDOM.render(<RegWorker/> , document.getElementById("root"));
 }
 
+function registerOc(){
+    ReactDOM.render(<Report/> , document.getElementById("root"));
+}
+
 function init(){
-    if(localStorage.getItem('token') !== null) {
-        ReactDOM.render(
-            <InitPage />, document.getElementById("root")
-        );
-    }else{
-        ReactDOM.render(
-            <InitPage />, document.getElementById("root")
-        );
-    }
+    fetch('https://hardy-scarab-200218.appspot.com/api/verifytoken', {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': localStorage.getItem('token')
+        }
+    }).then(function(response) {
+
+            if (response.status === 200) {
+                ReactDOM.render(
+                    <Dashboard />, document.getElementById("root")
+                );
+            }else if(response.status === 403){
+                console.log("403 (no token)");
+                ReactDOM.render(
+                    <InitPage />, document.getElementById("root")
+                );
+            }else{
+                console.log("Error 417 (formatacao)");
+                ReactDOM.render(
+                    <InitPage />, document.getElementById("root")
+                );
+            }
 
 
+        }
+    )
+        .catch(function(err) {
+            console.log('Fetch Error', err);
+        });
 }
 
 // ========================================
