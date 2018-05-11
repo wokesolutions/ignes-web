@@ -5,6 +5,7 @@ import GoogleMapReact from 'google-map-react';
 import Slider from 'react-rangeslider';
 import 'react-rangeslider/lib/index.css';
 import Geocode from "./Geo.js";
+import * as markers from "react-google-maps";
 
 
 var titulo;
@@ -14,27 +15,41 @@ var gravidade;
 var img;
 var latLng;
 
+
+const CustomMarker = ({ text }) => <div className="custom-marker"><p>{text}</p></div>;
+
 Geocode.setApiKey("AIzaSyAfHsLp6fKLK4YZ2WSoXO0KsM58Clspg8k");
 
 const AnyReactComponent = ({ text }) => <div>{text}</div>;
 
 class SimpleMap extends React.Component {
+
     static defaultProps = {
         center: {
-            lat: 59.95,
-            lng: 30.33
+            lat: 38.7,
+            lng: -9.2
         },
         zoom: 11
     };
 
     render() {
+        const GoogleMapsMarkers = markers.map(marker => (
+            <CustomMarker
+                key={`marker_${marker.name}`}
+                lat={38.7}
+                lng={-9.2}
+                text={marker.name}
+            />
+        ));
         return (
             <div style={{ height: '70vh', width: '100%' }}>
                 <GoogleMapReact
                     bootstrapURLKeys={{ key:"AIzaSyAfHsLp6fKLK4YZ2WSoXO0KsM58Clspg8k"}}
                     defaultCenter={this.props.center}
                     defaultZoom={this.props.zoom}
+
                 >
+                    {GoogleMapsMarkers}
                     <AnyReactComponent
                         lat={59.955413}
                         lng={30.337844}
@@ -74,7 +89,7 @@ class Horizontal extends React.Component {
         return (
             <div className='slider'>
                 <Slider
-                    min={0}
+                    min={1}
                     max={5}
                     value={value}
                     onChangeStart={this.handleChangeStart}
