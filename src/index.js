@@ -4,7 +4,9 @@ import $ from 'jquery';
 import GoogleMapReact from 'google-map-react';
 import Slider from 'react-rangeslider';
 import 'react-rangeslider/lib/index.css';
-import Geocode from "react-geocode";
+import Geocode from "./Geo.js";
+
+
 
 Geocode.setApiKey("AIzaSyAfHsLp6fKLK4YZ2WSoXO0KsM58Clspg8k");
 
@@ -23,7 +25,7 @@ class SimpleMap extends React.Component {
         return (
             <div style={{ height: '70vh', width: '100%' }}>
                 <GoogleMapReact
-                    bootstrapURLKeys={{ key:"AIzaSyAfHsLp6fKLK4YZ2WSoXO0KsM58Clspg8k"}}
+                    bootstrapURLKeys={{ key:"AIzaSyCL1UP4sTy6jtfLL5NyH-VhiAouW5dsqII"}}
                     defaultCenter={this.props.center}
                     defaultZoom={this.props.zoom}
                 >
@@ -572,15 +574,15 @@ class LogIn extends React.Component {
                                 <form name="sentMessage" id="singupForm">
                                     <div className="form-group floating-label-form-group controls">
                                         <label className="register">Username </label> <input type="text" className="form-control"
-                                                                                         placeholder="Username (*)" id="username" required
-                                                                                         data-validation-required-message="Please enter your name."/>
+                                                                                             placeholder="Username (*)" id="username" required
+                                                                                             data-validation-required-message="Please enter your name."/>
 
                                     </div>
                                     <div className="form-group floating-label-form-group controls">
                                         <label className="register">Password</label> <input type="password"
-                                                                                        className="form-control" placeholder="Password (*)" id="password"
-                                                                                        required
-                                                                                        data-validation-required-message="Please enter your password."/>
+                                                                                            className="form-control" placeholder="Password (*)" id="password"
+                                                                                            required
+                                                                                            data-validation-required-message="Please enter your password."/>
                                     </div>
                                 </form>
                             </div>
@@ -902,15 +904,7 @@ class InitPage extends React.Component {
 
 class Dashboard extends React.Component{
     componentDidMount(){
-        Geocode.fromAddress("Eiffel Tower").then(
-            response => {
-                const { lat, lng } = response.results[0].geometry.location;
-                console.log(lat, lng);
-            },
-            error => {
-                console.error(error);
-            }
-        );
+        convertoFromAdressToCoordinates('Lisboa');
 
         ReactDOM.render(<SimpleMap/> , document.getElementById("map"));
     }
@@ -970,8 +964,7 @@ class Report extends React.Component{
         var descricao = document.getElementById('descricao').value;
         var gravidade = document.getElementById('range').value;
         var img;
-        var lat;
-        var lng;
+        var latLng = convertoFromAddressToCoordinates(morada);
 
         fetch('https://hardy-scarab-200218.appspot.com/api/report/create', {
             method: 'POST',
@@ -981,8 +974,8 @@ class Report extends React.Component{
                 'Authorization': localStorage.getItem('token')
             },
             body: JSON.stringify({
-                report_lat: lat,
-                report_lng: lng,
+                report_lat: latLng.lat,
+                report_lng: latLng.lng,
                 report_img: img,
                 report_title: titulo,
                 report_descricao: descricao,
@@ -991,13 +984,7 @@ class Report extends React.Component{
         }).then(function(response) {
 
                 if (response.status === 200) {
-                    console.log(localStorage.length);
-                    var auth = response.headers.get('Authorization');
-                    console.log(auth);
-                    localStorage.setItem('token', auth);
-                    alert(localStorage.getItem('token'));
-                    console.log(localStorage.length);
-                    console.log(localStorage.length);
+
                     ReactDOM.render(<Dashboard/> , document.getElementById("root"));
                 }
 
@@ -1142,12 +1129,16 @@ function registerOc(){
     ReactDOM.render(<Report/> , document.getElementById("root"));
 }
 
-function registerOc(){
-    ReactDOM.render(<Report/> , document.getElementById("root"));
-}
-
-function map(){
-    ReactDOM.render(<Report/> , document.getElementById("root"));
+function convertoFromAddressToCoordinates(address){
+    Geocode.fromAddress(address).then(
+        response => {
+            var latLng = response.results[0].geometry.location;
+            return latLng;
+        },
+        error => {
+            console.error(error);
+        }
+    );
 }
 
 function init(){
