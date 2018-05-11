@@ -7,6 +7,12 @@ import 'react-rangeslider/lib/index.css';
 import Geocode from "./Geo.js";
 
 
+var titulo;
+var morada;
+var descricao;
+var gravidade;
+var img;
+var latLng;
 
 Geocode.setApiKey("AIzaSyAfHsLp6fKLK4YZ2WSoXO0KsM58Clspg8k");
 
@@ -25,7 +31,7 @@ class SimpleMap extends React.Component {
         return (
             <div style={{ height: '70vh', width: '100%' }}>
                 <GoogleMapReact
-                    bootstrapURLKeys={{ key:"AIzaSyCL1UP4sTy6jtfLL5NyH-VhiAouW5dsqII"}}
+                    bootstrapURLKeys={{ key:"AIzaSyAfHsLp6fKLK4YZ2WSoXO0KsM58Clspg8k"}}
                     defaultCenter={this.props.center}
                     defaultZoom={this.props.zoom}
                 >
@@ -34,6 +40,7 @@ class SimpleMap extends React.Component {
                         lng={30.337844}
                         text={'Kreyser Avrora'}
                     />
+
                 </GoogleMapReact>
             </div>
         );
@@ -904,7 +911,6 @@ class InitPage extends React.Component {
 
 class Dashboard extends React.Component{
     componentDidMount(){
-        convertoFromAdressToCoordinates('Lisboa');
 
         ReactDOM.render(<SimpleMap/> , document.getElementById("map"));
     }
@@ -959,40 +965,12 @@ class Dashboard extends React.Component{
 
 class Report extends React.Component{
     addReport(){
-        var titulo = document.getElementById('titulo').value;
-        var morada = document.getElementById('morada').value;
-        var descricao = document.getElementById('descricao').value;
-        var gravidade = document.getElementById('range').value;
-        var img;
-        var latLng = convertoFromAddressToCoordinates(morada);
+        titulo = document.getElementById('titulo').value;
+        morada = document.getElementById('morada').value;
+        descricao = document.getElementById('descricao').value;
+        gravidade = document.getElementById('range').value;
+        convertoFromAddressToCoordinates(morada);
 
-        fetch('https://hardy-scarab-200218.appspot.com/api/report/create', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': localStorage.getItem('token')
-            },
-            body: JSON.stringify({
-                report_lat: latLng.lat,
-                report_lng: latLng.lng,
-                report_img: img,
-                report_title: titulo,
-                report_descricao: descricao,
-                report_gravity: gravidade
-            })
-        }).then(function(response) {
-
-                if (response.status === 200) {
-
-                    ReactDOM.render(<Dashboard/> , document.getElementById("root"));
-                }
-
-            }
-        )
-            .catch(function(err) {
-                console.log('Fetch Error', err);
-            });
 
     }
 
@@ -1063,7 +1041,7 @@ class Report extends React.Component{
 
                                     <div class="row">
                                         <div class="col-lg-12 mx-lg-auto text-center">
-                                            <button type="button" class="btn btn-circle btn-xl"><i className="fa fa-check" id="iconcheck"> </i> </button>
+                                            <button onClick={this.addReport} type="button" class="btn btn-circle btn-xl"><i className="fa fa-check" id="iconcheck"> </i> </button>
                                         </div>
                                     </div>
 
@@ -1132,8 +1110,38 @@ function registerOc(){
 function convertoFromAddressToCoordinates(address){
     Geocode.fromAddress(address).then(
         response => {
-            var latLng = response.results[0].geometry.location;
-            return latLng;
+           latLng = response.results[0].geometry.location;
+            console.log(latLng);
+
+                fetch('https://hardy-scarab-200218.appspot.com/api/report/create', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'Authorization': localStorage.getItem('token')
+                    },
+                    body: JSON.stringify({
+                        report_lat: latLng.lat,
+                        report_lng: latLng.lng,
+                        report_img: "ola",
+                        report_title: titulo,
+                        report_descricao: descricao,
+                        report_gravity: gravidade
+                    })
+                }).then(function(response) {
+                    console.log("then");
+                        if (response.status === 200) {
+
+                            ReactDOM.render(<Dashboard/> , document.getElementById("root"));
+                        }
+
+                    }
+                )
+                    .catch(function(err) {
+                        console.log('Fetch Error', err);
+                    });
+
+
         },
         error => {
             console.error(error);
