@@ -17,7 +17,7 @@ var latLng;
 
 Geocode.setApiKey("AIzaSyAfHsLp6fKLK4YZ2WSoXO0KsM58Clspg8k");
 
-const AnyReactComponent = ({ img }) => <img src="../images/33622.svg" alt="oi">{img}</img>;
+const AnyReactComponent = ({ img }) => <img src="../images/33622.svg" alt="Marker">{img}</img>;
 
 class SimpleMap extends React.Component {
 
@@ -41,9 +41,9 @@ class SimpleMap extends React.Component {
 
                 >
                     <AnyReactComponent
-                        lat={59.955413}
-                        lng={30.337844}
-
+                        lat={38.7}
+                        lng={-9.2}
+                        anchor={{x:0,y:0.5}}
                     />
                 </GoogleMapReact>
             </div>
