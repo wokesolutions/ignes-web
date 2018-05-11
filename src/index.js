@@ -1,11 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import $ from 'jquery';
-import GoogleMapReact from 'google-map-react';
 import Slider from 'react-rangeslider';
 import 'react-rangeslider/lib/index.css';
 import Geocode from "./Geo.js";
-import * as markers from "react-google-maps";
+import { GoogleApiWrapper, InfoWindow, Map, Marker } from 'google-maps-react';
 
 
 var titulo;
@@ -16,51 +15,72 @@ var img;
 var latLng;
 
 
-const CustomMarker = ({ text }) => <div className="custom-marker"><p>{text}</p></div>;
-
 Geocode.setApiKey("AIzaSyAfHsLp6fKLK4YZ2WSoXO0KsM58Clspg8k");
-
-const AnyReactComponent = ({ text }) => <div>{text}</div>;
 
 class SimpleMap extends React.Component {
 
-    static defaultProps = {
-        center: {
-            lat: 38.7,
-            lng: -9.2
-        },
-        zoom: 11
-    };
-
+    constructor(props) {
+        super(props);
+        this.state = {
+            showingInfoWindow: false,
+            activeMarker: {},
+            selectedPlace: {}
+        }
+        // binding this to event-handler functions
+        this.onMarkerClick = this.onMarkerClick.bind(this);
+        this.onMapClick = this.onMapClick.bind(this);
+    }
+    onMarkerClick = (props, marker, e) => {
+        this.setState({
+            selectedPlace: props,
+            activeMarker: marker,
+            showingInfoWindow: true
+        });
+    }
+    onMapClick = (props) => {
+        if (this.state.showingInfoWindow) {
+            this.setState({
+                showingInfoWindow: false,
+                activeMarker: null
+            });
+        }
+    }
     render() {
-        const GoogleMapsMarkers = markers.map(marker => (
-            <CustomMarker
-                key={`marker_${marker.name}`}
-                lat={38.7}
-                lng={-9.2}
-                text={marker.name}
-            />
-        ));
+        const style = {
+            width: '50vw',
+            height: '75vh',
+            'marginLeft': 'auto',
+            'marginRight': 'auto'
+        }
         return (
-            <div style={{ height: '70vh', width: '100%' }}>
-                <GoogleMapReact
-                    bootstrapURLKeys={{ key:"AIzaSyAfHsLp6fKLK4YZ2WSoXO0KsM58Clspg8k"}}
-                    defaultCenter={this.props.center}
-                    defaultZoom={this.props.zoom}
-
+            <Map
+                item
+                xs = { 12 }
+                style = { style }
+                google = { this.props.google }
+                onClick = { this.onMapClick }
+                zoom = { 14 }
+                initialCenter = {{ lat: 39.648209, lng: -75.711185 }}
+            >
+                <Marker
+                    onClick = { this.onMarkerClick }
+                    title = { 'Changing Colors Garage' }
+                    position = {{ lat: 39.648209, lng: -75.711185 }}
+                    name = { 'Changing Colors Garage' }
+                />
+                <InfoWindow
+                    marker = { this.state.activeMarker }
+                    visible = { this.state.showingInfoWindow }
                 >
-                    {GoogleMapsMarkers}
-                    <AnyReactComponent
-                        lat={59.955413}
-                        lng={30.337844}
-                        text={'Kreyser Avrora'}
-                    />
-
-                </GoogleMapReact>
-            </div>
+                </InfoWindow>
+            </Map>
         );
     }
 }
+export default GoogleApiWrapper({
+    api: ("AIzaSyAfHsLp6fKLK4YZ2WSoXO0KsM58Clspg8k")
+})(SimpleMap)
+
 
 class Horizontal extends React.Component {
     constructor (props, context) {
