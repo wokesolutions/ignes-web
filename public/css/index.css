@@ -44,7 +44,7 @@ body,html{
 header.masthead {
     padding-top: 10rem;
     padding-bottom: calc(10rem - 56px);
-    background-image: url('/images/breaking-sun-forest-plain.jpg');
+    background-image: url('../images/breaking-sun-forest-plain.jpg');
     background-position: center center;
     -webkit-background-size: cover;
     -moz-background-size: cover;
@@ -179,19 +179,15 @@ footer a{
 #expBrand{
     font-size: 3rem;
     color: white !important;
-    font-family: "Quicksand Bold";
 
 }
 
 #expText{
-    font-size:1rem !important;
-    font-family: "Quicksand Bold";
-
-
+    font-size:1rem;
 }
 
 #expText:hover{
-    color: #000!important;
+    color: #000;
 }
 
 #navbarDef{
@@ -208,6 +204,7 @@ footer a{
     font-family: "Quicksand Bold" !important;
     margin-top: 1rem;
     margin-bottom: 1rem;
+
 }
 #searchType{
     margin-top: 2rem;
@@ -217,7 +214,8 @@ footer a{
     font-size: 6rem;
     color:#AD363B;
     margin-top: 2rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
+
 }
 #thisform{
     margin-top: 2rem;
@@ -273,6 +271,7 @@ footer a{
 
 #iconcheck{
     color: white;
+
 }
 
 .marker{
@@ -281,4 +280,65 @@ footer a{
     font-size:16px;
     background-color: #AD363B;
 
+}
+
+.form-control{
+    font-family: Quicksand !important;
+}
+.l{
+    margin-right: 2rem;
+    font-family: "Quicksand Bold";
+    color: white;
+
+}
+
+label {
+    font-size:1rem;
+    margin-top: 1rem;
+    font-family: "Quicksand Bold";
+
+}
+
+#imagem{
+    font-family: "Quicksand";
+}
+
+.slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 15px;
+    border-radius: 5px;
+    background: #37b520;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: black;
+    cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #4CAF50;
+    cursor: pointer;
+}
+
+#outputGravity{
+    font-family: "Quicksand Bold";
+    color:#AD363B;
+
+}
+
+#contactosMarg{
+    margin-top: 40px;
 }

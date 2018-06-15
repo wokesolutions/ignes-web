@@ -1,110 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import $ from 'jquery';
-import Slider from 'react-rangeslider';
 import 'react-rangeslider/lib/index.css';
-import Geocode from "./Geo.js";
-import  GoogleMapReact from 'google-map-react';
 
 
-var titulo;
-var morada;
-var descricao;
-var gravidade;
 var img;
-var latLng;
-var array;
-
-Geocode.setApiKey("AIzaSyAfHsLp6fKLK4YZ2WSoXO0KsM58Clspg8k");
-
-
-const AnyReactComponent = () => <div><img src="../images/33622.svg" alt="Marker"></img></div>;
-
-class SimpleMap extends React.Component {
-
-    centerMap = () =>{
-        var location = document.getElementById("location").value;
-        var loc;
-        Geocode.fromAddress(location).then(
-            response => {
-                loc = response.results[0].geometry.location;
-
-                ReactDOM.render(<SimpleMap center={loc} zoom ={13}/>, document.getElementById("map"));
-            },
-            error => {
-                console.error(error);
-            });
-    }
-
-    render() {
-        return (
-
-            <div>
-                <div className="container">
-                    <div className="row" id="searchType">
-                        <div className ="col-lg-12 col-sm-12 text-center">
-                            <div className="form-group floating-label-form-group controls">
-                                <input type="text" id="location" className="form-control" placeholder="Inserir localização"/>
-                            </div>
-                            <button type="submit" className="btn btn-default btn-colorRed" onClick={this.centerMap} > Procurar</button>
-
-                        </div>
-                    </div>
-                </div>
-
-
-                <div style={{ height: '65vh', width: '100%' }}>
-                    <GoogleMapReact
-                        bootstrapURLKeys={{ key:"AIzaSyAfHsLp6fKLK4YZ2WSoXO0KsM58Clspg8k"}}
-                        center={this.props.center}
-                        zoom={this.props.zoom}
-                    >
-                        <AnyReactComponent
-                            lat={this.props.center.lat}
-                            lng={this.props.center.lng}
-                            text={"Lixo na rua"}
-                        />
-                    </GoogleMapReact>
-                </div>
-            </div>
-        );
-    }
-}
-
-class Horizontal extends React.Component {
-    constructor (props, context) {
-        super(props, context)
-        this.state = {
-            value: 1
-        }
-    }
-
-    handleChange = value => {
-        this.setState({
-            value: value
-        })
-    };
-
-
-    render () {
-        const { value } = this.state
-        return (
-            <div className='slider'>
-                <Slider
-                    min={1}
-                    max={5}
-                    value={value}
-                    onChange={this.handleChange}
-                />
-                <div className="row">
-                    <div className="col-lg-8 mx-lg-auto text-center">
-                        <p id="efectone">Gravidade do Reporte<div className='value' id="efecttwo">{value}</div></p>
-                    </div>
-                </div>
-            </div>
-        )
-    }
-}
+var myStorage = window.localStorage;
 
 class RegWorker extends React.Component  {
     register(){
@@ -114,24 +15,33 @@ class RegWorker extends React.Component  {
         var confirmation = document.getElementById("confirmation").value;
         var code = document.getElementById("workerCode").value;
 
-        if(password === confirmation && email.indexOf("@") > -1) {
-            fetch('https://hardy-scarab-200218.appspot.com/api/register/worker', {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    worker_username: username,
-                    worker_password: password,
-                    worker_email: email,
-                    worker_code: code
-                })
-            })
-            ReactDOM.render(<LogIn/> , document.getElementById("root"));
-        }
-        else
-            alert("One or more fields don't meet the required standards.")
+
+        if (password === confirmation) {
+            if (email.indexOf("@") > -1) {
+                if (password.toString().length > 5) {
+                    fetch('https://hardy-scarab-200218.appspot.com/api/register/worker', {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            worker_username: username,
+                            worker_password: password,
+                            worker_email: email,
+                            worker_code: code
+                        })
+                    })
+                    ReactDOM.render(<LogIn/> , document.getElementById("root"));
+                }
+                else ReactDOM.render(<div class="row col-lg-8"><p className="help-block">Password demasiado pequena.
+                    Tente novamente</p></div>, document.getElementById("error"));
+
+            } else ReactDOM.render(<div class="row col-lg-8"><p className="help-block">Email incorrecto. Tente
+                novamente</p></div>, document.getElementById("error"));
+
+        } else ReactDOM.render(<div class="row col-lg-8"><p className="help-block">Password e Confirmação diferentes.
+            Tente novamente</p></div>, document.getElementById("error"));
 
     }
 
@@ -154,7 +64,7 @@ class RegWorker extends React.Component  {
                             <div className="col-lg-8 col-md-10 mx-auto">
                                 <br/> <br/>
                                 <div className="row" >
-                                    <h2 className="section-heading" >Junte-se a nós</h2>
+                                    <h2 className="section-headinges" >Junte-se a nós</h2>
 
                                 </div>
 
@@ -206,8 +116,7 @@ class RegWorker extends React.Component  {
                                     </div>
 
                                     <br/>
-                                    <p className="help-block text-danger"> (*) Campos obrigatórios </p>
-
+                                    <p className="help-block text-danger" id ="error"> (*) Campos obrigatórios </p>
                                 </form>
                             </div>
                         </div>
@@ -229,32 +138,47 @@ class RegWorker extends React.Component  {
 }
 
 class RegUser extends React.Component {
-    register(){
+    register() {
         var username = document.getElementById("username").value;
         var email = document.getElementById("email").value;
         var password = document.getElementById("password").value;
         var confirmation = document.getElementById("confirmation").value;
 
-        if(password === confirmation && email.indexOf("@") > -1) {
-            fetch('https://hardy-scarab-200218.appspot.com/api/register/user', {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    user_username: username,
-                    user_password: password,
-                    user_email: email
-                })
-            })
-            ReactDOM.render(<LogIn/> , document.getElementById("root"));
-        }
-        else
-            alert("One or more fields don't meet the required standards.")
 
+        if (password === confirmation) {
+            if (email.indexOf("@") > -1) {
+                if (password.toString().length > 5) {
+                    fetch('https://hardy-scarab-200218.appspot.com/api/register/user', {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            user_username: username,
+                            user_password: password,
+                            user_email: email
+                        })
+                    }).then(function (response) {
+
+                        if (response.status === 200) ReactDOM.render(<LogIn/>, document.getElementById("root"));
+
+
+                        else ReactDOM.render(<div class="row col-lg-8"><p className="help-block"> Username já existe.
+                            Tente novamente</p></div>, document.getElementById("error"));
+
+                    })
+
+                } else ReactDOM.render(<div class="row col-lg-8"><p className="help-block">Password demasiado pequena.
+                    Tente novamente</p></div>, document.getElementById("error"));
+
+            } else ReactDOM.render(<div class="row col-lg-8"><p className="help-block">Email incorrecto. Tente
+                novamente</p></div>, document.getElementById("error"));
+
+        } else ReactDOM.render(<div class="row col-lg-8"><p className="help-block">Password e Confirmação diferentes.
+            Tente novamente</p></div>, document.getElementById("error"));
     }
-    render() {
+    render(){
         return (
             <div>
                 <div>
@@ -271,7 +195,6 @@ class RegUser extends React.Component {
                         <div className="row">
 
                             <div className="col-lg-8 col-md-10 mx-auto">
-                                <br/> <br/>
                                 <div className="row" >
                                     <h2 className="section-heading" >Junte-se a nós</h2>
 
@@ -316,7 +239,7 @@ class RegUser extends React.Component {
                                     </div>
 
                                     <br/>
-                                    <p className="help-block text-danger"> (*) Campos obrigatórios </p>
+                                    <p className="help-block text-danger" id ="error"> (*) Campos obrigatórios </p>
 
                                 </form>
                             </div>
@@ -324,14 +247,19 @@ class RegUser extends React.Component {
                     </div>
                 </section>
 
+
+
                 <div className="row">
                     <div className="col-lg-12 col-md-12 mx-auto text-center">
                         <button type="submit" className="btn-light" id="signup" onClick={this.register}>
                             <img src="images/7.svg" alt="Registo"/>
                             <p className="textbtn">Resgistar </p>
                         </button>
+
                     </div>
+
                 </div>
+
 
             </div>
         );
@@ -401,7 +329,7 @@ class RegCompany extends React.Component {
                             <div className="col-lg-8 col-md-8 mx-auto">
                                 <br/> <br/>
                                 <div className="row" >
-                                    <h2 className="section-heading" >Junte-se a nós</h2>
+                                    <h2 className="section-headinges" >Junte-se a nós</h2>
                                 </div>
 
                                 <form name="sentMessage" id="signupForm">
@@ -410,7 +338,7 @@ class RegCompany extends React.Component {
                                             <div className="col-lg-6">
                                                 <div className="form-group floating-label-form-group controls">
                                                     <label>Nome </label> <input type="text" className="form-control"
-                                                                                placeholder="Nome (*)" id="name" required
+                                                                                placeholder="Nome (*)" id="name" REQUIRED
                                                                                 data-validation-required-message="Insira o nome da organização."/>
 
                                                 </div></div>
@@ -507,7 +435,7 @@ class RegCompany extends React.Component {
                                             <p id="firestation"> É Quartel de Bombeiros?</p>
 
                                         </div></div>
-                                    <p className="help-block text-danger"> (*) Campos obrigatórios </p>
+                                    <p className="help-block text-danger" id="error"> (*) Campos obrigatórios </p>
 
                                 </form>
                             </div>
@@ -536,37 +464,69 @@ class LogIn extends React.Component {
 
         if(logPassword !== "" && logUsername !== "") {
 
+            /* axios({
+                 method: 'post',
+                 url: 'https://hardy-scarab-200218.appspot.com/api/login',
+                 data: JSON.stringify({
+                     username: logUsername,
+                     password: logPassword}
+                     )
+                 ,
+                 headers: {
+                     'Content-Type': 'application/json'
+                 },
+             }).then(function(response){
+                 alert("ola");
+                 if (response.status === 200) {
+
+                     var auth = response.headers.authorization;
+                     console.log(auth);
+                     console.log(auth);
+                     myStorage.setItem('token', auth);
+                     console.log(myStorage.length);
+
+                     console.log(auth);
+                     alert(myStorage.getItem('token'));
+                     console.log(myStorage.length);
+                     window.location.href = "DashboardOrganizations.html"
+                 }
+
+
+             });*/
+
             fetch('https://hardy-scarab-200218.appspot.com/api/login', {
                 method: 'POST',
                 headers: {
-                    'Accept': 'application/json',
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
                     username: logUsername,
                     password: logPassword
                 })
-            }).then(function(response) {
+            }).then(function (response) {
 
                     if (response.status === 200) {
-
                         var auth = response.headers.get('Authorization');
+                        console.log(response.headers.get('Authorization'));
+                        console.log(auth);
+                        myStorage.setItem('token', auth);
+                        console.log(myStorage.length);
 
-                        localStorage.setItem('token', auth);
-
-                        ReactDOM.render(<Dashboard/> , document.getElementById("root"));
+                        console.log(auth);
+                        alert(myStorage.getItem('token'));
+                        console.log(myStorage.length);
+                        window.location.href = "Dashboard.html"
                     }
+                    else  ReactDOM.render(<div class="row col-lg-8"><p className="help-block">Username ou Password incorrectos.
+                    </p></div>, document.getElementById("error"));
 
                 }
             )
-                .catch(function(err) {
+                .catch(function (err) {
                     console.log('Fetch Error', err);
                 });
 
-
-        }
-        else
-            alert("Username or password do not exist.")
+        } else ReactDOM.render(<div class="row col-lg-8"><p className="help-block">Campos incompletos.</p></div>, document.getElementById("error"));
 
     }
 
@@ -609,33 +569,26 @@ class LogIn extends React.Component {
                     </div>
                 </section>
 
+                <div className="container">
                 <div className="row">
+                    <div className="col-lg-8 col-md-8 mx-auto text-center">
+                            <p className="help-block text-danger" id ="error"> </p>
+                    </div>
+                </div>
+                </div>
+                <div className="row">
+
                     <div className="col-lg-12 col-md-12 mx-auto text-center">
+
                         <button type="submit" className="btn " id="signup" onClick={this.logInFunc}>
                             <img className="imgbtn" src="images/7.svg" alt={"Botao Log In"}/> <p className="textbtn">Entrar </p>
                         </button>
+
                     </div>
                 </div>
 
                 <div id="footermargin">
-                    <div className="container">
-                        <div className="row redessociais">
-                            <div className="col-lg-12 mr-auto text-center">
-                                <ul className="list-inline banner-social-buttons">
-                                    <li className="list-inline-item"><a
-                                        href="https://github.com/BlackrockDigital/startbootstrap"
-                                        className="btn btn-primary btn-sm"> <i
-                                        className="fa fa-facebook-f "></i> <span className="text">Facebook</span>
-                                    </a></li>
-                                    <li className="list-inline-item"><a
-                                        href="https://plus.google.com/+WokeSolutions/posts"
-                                        className="btn btn1 btn-sm "> <i
-                                        className="fa fa-google "></i> <span className="text">Google</span>
-                                    </a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+
                     <div>
                         <div className="container">
                             <div className = "row">
@@ -845,8 +798,6 @@ class InitPage extends React.Component {
                     <p id="junte"> Junte-se </p>
                 </div>
                 <div className ="row">
-
-
                     <div className = "col-lg-3 col-sm-3 mx-auto text-center">
                         <button className ="btn btn-light flame " id="button_flame" onClick={regAccountUser}>
                             <img src="images/5.svg" className="img-flame"alt="Cidadao"/>
@@ -921,141 +872,8 @@ class InitPage extends React.Component {
 
 }
 
-class Dashboard extends React.Component{
 
-    componentDidMount(){
-        var locat = {lat:38.72,lng: -9.22};
-        ReactDOM.render(<SimpleMap center={locat} zoom={6}/> , document.getElementById("map"));
-    }
-    render() {
-        return (
-            <div>
-                <nav className="navbar navbar-expand-lg navbar-light" id = "navbarDef">
-                    <div className="container" id="cont">
-                        <a className = "navbar-brand js-scroll-trigger"  id ="expBrand" href="#page-top"> Ignes </a>
-                        <div className="collapse navbar-collapse" id="navbarResponsive">
-                            <ul className="navbar-nav ml-auto">
-                                <li className="nav-item pointer-finger"><a className="nav-link js-scroll-trigger" id = "expText" ><i className="fa fa-user"> </i>  Perfil</a></li>
-                                <li className="nav-item pointer-finger"><a className="nav-link js-scroll-trigger" id = "expText" ><i className="fa fa-newspaper-o"> </i>  Feed</a></li>
-                                <li className="nav-item pointer-finger"><a className="nav-link js-scroll-trigger" id = "expText" ><i className="fa fa-map-o"> </i>  Mapa</a></li>
-                                <li className="nav-item pointer-finger"><a className="nav-link js-scroll-trigger" id = "expText" onClick={registerOc}><i className="fa fa-map-marker"> </i>  Reportar</a></li>
-                                <li className="nav-item pointer-finger"><a className="nav-link js-scroll-trigger" id = "expText" ><i className="fa fa-comments-o"> </i>  Espaçinho das Dicas do Vizinho</a></li>
-                                <li className="nav-item pointer-finger"><a className="nav-link js-scroll-trigger"id = "expText"  ><i className="fa fa-phone"> </i>  Contactos</a></li>
-                                <li className="nav-item pointer-finger"><a className="nav-link js-scroll-trigger"id = "expText"  ><i className="fa fa-wrench"> </i>  Definições</a></li>
-                                <li className="nav-item pointer-finger"><a className="nav-link js-scroll-trigger"id = "expText"  onClick={logOut}><i className="fa fa-power-off"> </i>  Terminar Sessão</a></li>
-                            </ul>
-                        </div>
-
-                    </div>
-                </nav>
-
-
-                <div className="container">
-                    <div className="row" id="searchType">
-                        <div className ="col-lg-12 col-sm-12 text-center">
-                            <div id ="map"/>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        )
-    }
-}
-
-class Report extends React.Component{
-    addReport(){
-        titulo = document.getElementById('titulo').value;
-        morada = document.getElementById('morada').value;
-        descricao = document.getElementById('descricao').value;
-        gravidade = document.getElementById('efecttwo').value;
-        convertoFromAddressToCoordinates(morada);
-    }
-
-    componentDidMount(){
-        ReactDOM.render(<Horizontal/> , document.getElementById("range"));
-    }
-    render() {
-        return (
-            <div>
-                <nav className="navbar navbar-expand-lg navbar-light" id = "navbarDef">
-                    <div className="container" id="cont">
-                        <a className = "navbar-brand js-scroll-trigger"  id ="expBrand" href="#page-top"> Ignes </a>
-                        <div className="collapse navbar-collapse" id="navbarResponsive">
-                            <ul className="navbar-nav ml-auto">
-                                <li className="nav-item pointer-finger"><a className="nav-link js-scroll-trigger" id = "expText" href="#quemsomos"><i className="fa fa-user"> </i>  Perfil</a></li>
-                                <li className="nav-item pointer-finger"><a className="nav-link js-scroll-trigger" id = "expText" href="#oquefazemos"><i className="fa fa-newspaper-o"> </i>  Feed</a></li>
-                                <li className="nav-item pointer-finger"><a className="nav-link js-scroll-trigger" id = "expText"  ><i className="fa fa-map-o" onClick={dashboard}> </i>  Mapa</a></li>
-                                <li className="nav-item pointer-finger"><a className="nav-link js-scroll-trigger" id = "expText" onClick={registerOc} ><i className="fa fa-map-marker"> </i>  Reportar</a></li>
-                                <li className="nav-item pointer-finger"><a className="nav-link js-scroll-trigger" id = "expText" href="#footer"><i className="	fa fa-comments-o"> </i>   Espaçinho das Dicas do Vizinho</a></li>
-                                <li className="nav-item pointer-finger"><a className="nav-link js-scroll-trigger"id = "expText"  ><i className="fa fa-phone"> </i>  Contactos</a></li>
-                                <li className="nav-item pointer-finger"><a className="nav-link js-scroll-trigger"id = "expText" ><i className="	fa fa-wrench"> </i>  Definições</a></li>
-                                <li className="nav-item pointer-finger"><a className="nav-link js-scroll-trigger"id = "expText"  onClick={logOut}><i className="fa fa-power-off"> </i>  Terminar Sessão</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </nav>
-                <section className ="login">
-                    <div className="container">
-                        <div className="row">
-                            <div className="col-lg-8 col-md-8 mx-auto">
-                                <div className="row" >
-                                    <div className="col-lg-2 col-md-2 mx-auto"></div>
-                                    <div className="col-lg-4 col-md-4 mx-auto text-center">
-                                        <i className="fa fa-map-marker" id ="iconMarker"> </i>
-                                    </div>
-                                    <div className="col-lg-2 col-md-2 mx-auto"></div>
-                                </div>
-                                <div className="row">
-                                    <div className="col-lg-8 mx-lg-auto">
-                                        <div id="range"/>
-                                    </div>
-                                </div>
-                                <form name="sentMessage" id="singupForm">
-                                    <div className="form-group floating-label-form-group controls text-center">
-                                        <label >Titulo </label> <input type="text" className="form-control"
-                                                                       placeholder="Titulo (*)" id="titulo"/>
-
-                                    </div>
-                                    <div className="form-group floating-label-form-group controls text-center" id="thisform">
-                                        <label >Morada</label> <input type="text"
-                                                                      className="form-control" placeholder="Morada (*)" id="morada"/>
-                                    </div>
-                                    <div className="form-group floating-label-form-group controls text-center" id="thisform">
-                                        <label >Descrição</label> <input type="text"
-                                                                         className="form-control" placeholder="Descrição (*)" id="descricao"/>
-                                    </div>
-                                    <div className="form-group floating-label-form-group controls text-center" id="thisform">
-                                        <label >Upload Fotografia</label>
-                                        <div className="row">
-                                            <div className="col-lg-2 col-md-2 mx-auto"></div>
-                                            <div className="col-lg-4 col-md-4 mx-auto text-center">
-                                                <input type="file" id="imagem" onChange={readFile}/>
-                                            </div>
-                                            <div className="col-lg-2 col-md-2 mx-auto"></div>
-
-                                        </div>
-                                    </div>
-
-                                    <div className="row">
-                                        <div className="col-lg-12 mx-lg-auto text-center">
-                                            <button onClick={this.addReport} type="button" className="btn btn-circle btn-xl"><i className="fa fa-check" id="iconcheck"> </i> </button>
-                                        </div>
-                                    </div>
-
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-
-            </div>
-
-        )
-    }
-}
-
+/*
 function readFile(){
     img = document.getElementById('imagem').files[0];
     var reader = new FileReader();
@@ -1063,34 +881,7 @@ function readFile(){
 
 }
 
-function logOut(){
-    fetch('https://hardy-scarab-200218.appspot.com/api/logout', {
-        method: 'GET',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Authorization': localStorage.getItem('token')
-        }
-    }).then(function(response) {
-
-            if (response.status === 200) {
-                localStorage.removeItem('token');
-                alert(localStorage.getItem('token'));
-                init();
-            }else{
-                console.log("Tratar do Forbidden")
-            }
-
-
-        }
-    )
-        .catch(function(err) {
-            console.log('Fetch Error', err);
-        });
-
-
-
-}
+*/
 
 function regAccountCom(){
     ReactDOM.render(<RegCompany/> , document.getElementById("root"));
@@ -1108,55 +899,6 @@ function regAccountWorker(){
     ReactDOM.render(<RegWorker/> , document.getElementById("root"));
 }
 
-function registerOc(){
-    ReactDOM.render(<Report/> , document.getElementById("root"));
-}
-
-function dashboard(){
-    ReactDOM.render(<Dashboard/> , document.getElementById("root"));
-}
-
-function convertoFromAddressToCoordinates(address){
-    Geocode.fromAddress(address).then(
-        response => {
-            latLng = response.results[0].geometry.location;
-
-            fetch('https://hardy-scarab-200218.appspot.com/api/report/create', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': localStorage.getItem('token')
-                },
-                body: JSON.stringify({
-                    report_lat: latLng.lat,
-                    report_lng: latLng.lng,
-                    report_title: titulo,
-                    report_img: btoa(array),
-                    report_thumbnail: btoa(array),
-                    report_description: descricao
-
-                })
-            }).then(function(response) {
-                    console.log("then");
-                    if (response.status === 200) {
-
-                        ReactDOM.render(<Dashboard/> , document.getElementById("root"));
-                    }
-
-                }
-            )
-                .catch(function(err) {
-                    console.log('Fetch Error', err);
-                });
-
-
-        },
-        error => {
-            console.error(error);
-        }
-    );
-}
-
 function init(){
     fetch('https://hardy-scarab-200218.appspot.com/api/verifytoken', {
         method: 'GET',
@@ -1168,9 +910,8 @@ function init(){
     }).then(function(response) {
 
             if (response.status === 200) {
-                ReactDOM.render(
-                    <Dashboard />, document.getElementById("root")
-                );
+                window.location.href = "Dashboard.html";
+
             }else if(response.status === 403){
                 console.log("403 (no token)");
                 ReactDOM.render(
