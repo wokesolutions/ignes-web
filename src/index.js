@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import $ from 'jquery';
-import GoogleMapReact from 'google-map-react';
 import Slider from 'react-rangeslider';
 import 'react-rangeslider/lib/index.css';
 import Geocode from "./Geo.js";
+import  GoogleMapReact from 'google-map-react';
 
 
 var titulo;
@@ -13,39 +13,59 @@ var descricao;
 var gravidade;
 var img;
 var latLng;
-
+var array;
 
 Geocode.setApiKey("AIzaSyAfHsLp6fKLK4YZ2WSoXO0KsM58Clspg8k");
 
-const AnyReactComponent = ({ img }) => <img src="../images/33622.svg" alt="Marker">{img}</img>;
+
+const AnyReactComponent = () => <div><img src="../images/33622.svg" alt="Marker"></img></div>;
 
 class SimpleMap extends React.Component {
 
-    static defaultProps = {
-        center: {
-            lat: 38.7,
-            lng: -9.2
-        },
-        zoom: 11
-    };
+    centerMap = () =>{
+        var location = document.getElementById("location").value;
+        var loc;
+        Geocode.fromAddress(location).then(
+            response => {
+                loc = response.results[0].geometry.location;
 
+                ReactDOM.render(<SimpleMap center={loc} zoom ={13}/>, document.getElementById("map"));
+            },
+            error => {
+                console.error(error);
+            });
+    }
 
     render() {
-
         return (
-            <div style={{ height: '70vh', width: '100%' }}>
-                <GoogleMapReact
-                    bootstrapURLKeys={{ key:"AIzaSyAfHsLp6fKLK4YZ2WSoXO0KsM58Clspg8k"}}
-                    defaultCenter={this.props.center}
-                    defaultZoom={this.props.zoom}
 
-                >
-                    <AnyReactComponent
-                        lat={38.7}
-                        lng={-9.2}
-                        anchor={{x:0,y:0.5}}
-                    />
-                </GoogleMapReact>
+            <div>
+                <div className="container">
+                    <div className="row" id="searchType">
+                        <div className ="col-lg-12 col-sm-12 text-center">
+                            <div className="form-group floating-label-form-group controls">
+                                <input type="text" id="location" className="form-control" placeholder="Inserir localização"/>
+                            </div>
+                            <button type="submit" className="btn btn-default btn-colorRed" onClick={this.centerMap} > Procurar</button>
+
+                        </div>
+                    </div>
+                </div>
+
+
+                <div style={{ height: '65vh', width: '100%' }}>
+                    <GoogleMapReact
+                        bootstrapURLKeys={{ key:"AIzaSyAfHsLp6fKLK4YZ2WSoXO0KsM58Clspg8k"}}
+                        center={this.props.center}
+                        zoom={this.props.zoom}
+                    >
+                        <AnyReactComponent
+                            lat={this.props.center.lat}
+                            lng={this.props.center.lng}
+                            text={"Lixo na rua"}
+                        />
+                    </GoogleMapReact>
+                </div>
             </div>
         );
     }
@@ -55,13 +75,9 @@ class Horizontal extends React.Component {
     constructor (props, context) {
         super(props, context)
         this.state = {
-            value: 0
+            value: 1
         }
     }
-
-    handleChangeStart = () => {
-        console.log('Change event started')
-    };
 
     handleChange = value => {
         this.setState({
@@ -69,9 +85,6 @@ class Horizontal extends React.Component {
         })
     };
 
-    handleChangeComplete = () => {
-        console.log('Change event completed')
-    };
 
     render () {
         const { value } = this.state
@@ -81,12 +94,10 @@ class Horizontal extends React.Component {
                     min={1}
                     max={5}
                     value={value}
-                    onChangeStart={this.handleChangeStart}
                     onChange={this.handleChange}
-                    onChangeComplete={this.handleChangeComplete}
                 />
-                <div class="row">
-                    <div class="col-lg-8 mx-lg-auto text-center">
+                <div className="row">
+                    <div className="col-lg-8 mx-lg-auto text-center">
                         <p id="efectone">Gravidade do Reporte<div className='value' id="efecttwo">{value}</div></p>
                     </div>
                 </div>
@@ -525,7 +536,6 @@ class LogIn extends React.Component {
 
         if(logPassword !== "" && logUsername !== "") {
 
-            console.log(localStorage.length);
             fetch('https://hardy-scarab-200218.appspot.com/api/login', {
                 method: 'POST',
                 headers: {
@@ -539,13 +549,11 @@ class LogIn extends React.Component {
             }).then(function(response) {
 
                     if (response.status === 200) {
-                        console.log(localStorage.length);
+
                         var auth = response.headers.get('Authorization');
-                        console.log(auth);
+
                         localStorage.setItem('token', auth);
-                        alert(localStorage.getItem('token'));
-                        console.log(localStorage.length);
-                        console.log(localStorage.length);
+
                         ReactDOM.render(<Dashboard/> , document.getElementById("root"));
                     }
 
@@ -914,9 +922,10 @@ class InitPage extends React.Component {
 }
 
 class Dashboard extends React.Component{
-    componentDidMount(){
 
-        ReactDOM.render(<SimpleMap/> , document.getElementById("map"));
+    componentDidMount(){
+        var locat = {lat:38.72,lng: -9.22};
+        ReactDOM.render(<SimpleMap center={locat} zoom={6}/> , document.getElementById("map"));
     }
     render() {
         return (
@@ -944,19 +953,6 @@ class Dashboard extends React.Component{
                 <div className="container">
                     <div className="row" id="searchType">
                         <div className ="col-lg-12 col-sm-12 text-center">
-                            <div className="form-group floating-label-form-group controls">
-                                <input type="text" className="form-control" placeholder="Inserir localização"/>
-                            </div>
-                            <button type="submit" className="btn btn-default btn-colorRed" id="centerMap"> Procurar</button>
-
-                        </div>
-                    </div>
-                </div>
-
-
-                <div className="container">
-                    <div className="row" id="searchType">
-                        <div className ="col-lg-12 col-sm-12 text-center">
                             <div id ="map"/>
                         </div>
                     </div>
@@ -972,10 +968,8 @@ class Report extends React.Component{
         titulo = document.getElementById('titulo').value;
         morada = document.getElementById('morada').value;
         descricao = document.getElementById('descricao').value;
-        gravidade = document.getElementById('range').value;
+        gravidade = document.getElementById('efecttwo').value;
         convertoFromAddressToCoordinates(morada);
-
-
     }
 
     componentDidMount(){
@@ -991,7 +985,7 @@ class Report extends React.Component{
                             <ul className="navbar-nav ml-auto">
                                 <li className="nav-item pointer-finger"><a className="nav-link js-scroll-trigger" id = "expText" href="#quemsomos"><i className="fa fa-user"> </i>  Perfil</a></li>
                                 <li className="nav-item pointer-finger"><a className="nav-link js-scroll-trigger" id = "expText" href="#oquefazemos"><i className="fa fa-newspaper-o"> </i>  Feed</a></li>
-                                <li className="nav-item pointer-finger"><a className="nav-link js-scroll-trigger" id = "expText"  ><i className="fa fa-map-o"> </i>  Mapa</a></li>
+                                <li className="nav-item pointer-finger"><a className="nav-link js-scroll-trigger" id = "expText"  ><i className="fa fa-map-o" onClick={dashboard}> </i>  Mapa</a></li>
                                 <li className="nav-item pointer-finger"><a className="nav-link js-scroll-trigger" id = "expText" onClick={registerOc} ><i className="fa fa-map-marker"> </i>  Reportar</a></li>
                                 <li className="nav-item pointer-finger"><a className="nav-link js-scroll-trigger" id = "expText" href="#footer"><i className="	fa fa-comments-o"> </i>   Espaçinho das Dicas do Vizinho</a></li>
                                 <li className="nav-item pointer-finger"><a className="nav-link js-scroll-trigger"id = "expText"  ><i className="fa fa-phone"> </i>  Contactos</a></li>
@@ -1012,8 +1006,8 @@ class Report extends React.Component{
                                     </div>
                                     <div className="col-lg-2 col-md-2 mx-auto"></div>
                                 </div>
-                                <div class="row">
-                                    <div class="col-lg-8 mx-lg-auto">
+                                <div className="row">
+                                    <div className="col-lg-8 mx-lg-auto">
                                         <div id="range"/>
                                     </div>
                                 </div>
@@ -1036,16 +1030,16 @@ class Report extends React.Component{
                                         <div className="row">
                                             <div className="col-lg-2 col-md-2 mx-auto"></div>
                                             <div className="col-lg-4 col-md-4 mx-auto text-center">
-                                                <input type="file" id="imagem" name="imagem"/>
+                                                <input type="file" id="imagem" onChange={readFile}/>
                                             </div>
                                             <div className="col-lg-2 col-md-2 mx-auto"></div>
 
                                         </div>
                                     </div>
 
-                                    <div class="row">
-                                        <div class="col-lg-12 mx-lg-auto text-center">
-                                            <button onClick={this.addReport} type="button" class="btn btn-circle btn-xl"><i className="fa fa-check" id="iconcheck"> </i> </button>
+                                    <div className="row">
+                                        <div className="col-lg-12 mx-lg-auto text-center">
+                                            <button onClick={this.addReport} type="button" className="btn btn-circle btn-xl"><i className="fa fa-check" id="iconcheck"> </i> </button>
                                         </div>
                                     </div>
 
@@ -1060,6 +1054,13 @@ class Report extends React.Component{
 
         )
     }
+}
+
+function readFile(){
+    img = document.getElementById('imagem').files[0];
+    var reader = new FileReader();
+    array = reader.readAsArrayBuffer(img);
+
 }
 
 function logOut(){
@@ -1111,39 +1112,42 @@ function registerOc(){
     ReactDOM.render(<Report/> , document.getElementById("root"));
 }
 
+function dashboard(){
+    ReactDOM.render(<Dashboard/> , document.getElementById("root"));
+}
+
 function convertoFromAddressToCoordinates(address){
     Geocode.fromAddress(address).then(
         response => {
-           latLng = response.results[0].geometry.location;
-            console.log(latLng);
+            latLng = response.results[0].geometry.location;
 
-                fetch('https://hardy-scarab-200218.appspot.com/api/report/create', {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                        'Authorization': localStorage.getItem('token')
-                    },
-                    body: JSON.stringify({
-                        report_lat: latLng.lat,
-                        report_lng: latLng.lng,
-                        report_img: "ola",
-                        report_title: titulo,
-                        report_descricao: descricao,
-                        report_gravity: gravidade
-                    })
-                }).then(function(response) {
+            fetch('https://hardy-scarab-200218.appspot.com/api/report/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': localStorage.getItem('token')
+                },
+                body: JSON.stringify({
+                    report_lat: latLng.lat,
+                    report_lng: latLng.lng,
+                    report_title: titulo,
+                    report_img: btoa(array),
+                    report_thumbnail: btoa(array),
+                    report_description: descricao
+
+                })
+            }).then(function(response) {
                     console.log("then");
-                        if (response.status === 200) {
+                    if (response.status === 200) {
 
-                            ReactDOM.render(<Dashboard/> , document.getElementById("root"));
-                        }
-
+                        ReactDOM.render(<Dashboard/> , document.getElementById("root"));
                     }
-                )
-                    .catch(function(err) {
-                        console.log('Fetch Error', err);
-                    });
+
+                }
+            )
+                .catch(function(err) {
+                    console.log('Fetch Error', err);
+                });
 
 
         },
