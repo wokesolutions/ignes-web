@@ -348,11 +348,11 @@ function getProfile(){
                     else
                         document.getElementById("people_birthday").innerHTML = "-";
 
-                    if(data.useroptional_locality !== undefined)
+                  /*  if(data.useroptional_locality !== undefined)
                         document.getElementById("people_locality").innerHTML = data.useroptional_locality;
                     else
                         document.getElementById("people_locality").innerHTML = "-";
-
+                  */
                     if(data.useroptional_phone !== undefined)
                         document.getElementById("people_phone").innerHTML = data.useroptional_phone;
                     else
@@ -363,11 +363,11 @@ function getProfile(){
                     else
                         document.getElementById("people_address").innerHTML = "-";
 
-                    if(data.useroptional_zip !== undefined)
+                    /*  if(data.useroptional_zip !== undefined)
                        document.getElementById("people_cp").innerHTML = data.useroptional_zip;
                     else
                         document.getElementById("people_cp").innerHTML = "-";
-
+                    */
                     if(data.useroptional_gender !== undefined)
                         document.getElementById("people_gender").innerHTML = data.useroptional_gender;
                     else
