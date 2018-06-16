@@ -178,6 +178,7 @@ function logOut(){
 
             if (response.status === 200) {
                 localStorage.removeItem('token');
+                localStorage.removeItem('ignes_username');
                 window.location.href = "index.html";
 
             }else{
@@ -308,6 +309,7 @@ function showMap(){
 
 function showProfile() {
     hideShow('profile_variable');
+    getProfile();
 }
 
 function showFeed() {
@@ -324,6 +326,31 @@ function showContacts() {
 
 }
 
+function getProfile(){
+    fetch('https://hardy-scarab-200218.appspot.com/api/profile/view/' + localStorage.getItem('ignes_username'), {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': localStorage.getItem('token')
+        }
+    }).then(function(response) {
+
+            if (response.status === 200) {
+                console.log(response.body);
+
+            }else{
+                console.log("Tratar do Forbidden")
+            }
+
+
+        }
+    )
+        .catch(function(err) {
+            console.log('Fetch Error', err);
+        });
+
+}
 
 
 

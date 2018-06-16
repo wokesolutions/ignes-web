@@ -131,6 +131,7 @@ function logOut(){
 
             if (response.status === 200) {
                 localStorage.removeItem('token');
+                localStorage.removeItem('ignes_username');
                 window.location.href = "index.html";
 
             }else{

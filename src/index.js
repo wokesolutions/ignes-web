@@ -507,15 +507,19 @@ class LogIn extends React.Component {
 
                     if (response.status === 200) {
                         var auth = response.headers.get('Authorization');
-                        console.log(response.headers.get('Authorization'));
-                        console.log(auth);
-                        myStorage.setItem('token', auth);
-                        console.log(myStorage.length);
+                        var level = response.headers.get('Level');
 
-                        console.log(auth);
-                        alert(myStorage.getItem('token'));
-                        console.log(myStorage.length);
-                        window.location.href = "Dashboard.html"
+                        myStorage.setItem('token', auth);
+                        myStorage.setItem('ignes_username',logUsername);
+                        console.log(response.headers.get('Level'));
+
+                        if(level === "LEVEL1")  window.location.href = "../Dashboards/Dashboard.html";
+                        else if(level === "LEVEL2") window.location.href = "../Dashboards/Dashboard.html";
+                        else if(level === "LEVEL3") window.location.href = "../Dashboards/Dashboard.html";
+                        else if(level === "ORG") window.location.href = "../Dashboards/DashboardOrganizations.html";
+                        else if(level === "WORKER") window.location.href = "../Dashboards/DashboardWorker.html";
+                        else if(level === "ADMIN") window.location.href = "../Dashboards/DashboardAdmin.html";
+
                     }
                     else  ReactDOM.render(<div class="row col-lg-8"><p className="help-block">Username ou Password incorrectos.
                     </p></div>, document.getElementById("error"));
@@ -910,7 +914,14 @@ function init(){
     }).then(function(response) {
 
             if (response.status === 200) {
-                window.location.href = "Dashboard.html";
+                var level = response.headers.get('Level');
+
+                if(level === "LEVEL1")  window.location.href = "../Dashboards/Dashboard.html";
+                else if(level === "LEVEL2") window.location.href = "../Dashboards/Dashboard.html";
+                else if(level === "LEVEL3") window.location.href = "../Dashboards/Dashboard.html";
+                else if(level === "ORG") window.location.href = "../Dashboards/DashboardOrganizations.html";
+                else if(level === "WORKER") window.location.href = "../Dashboards/DashboardWorker.html";
+                else if(level === "ADMIN") window.location.href = "../Dashboards/DashboardAdmin.html";
 
             }else if(response.status === 403){
                 console.log("403 (no token)");
