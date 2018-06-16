@@ -123,15 +123,15 @@
     <div class="row profile_top">
         <div class=" col-md-2 col-lg-2 "></div>
         <div class=" col-md-2 col-lg-2 text-center">
-            <p class ="people_points">Pontos<p class ="people_numbers">0</p></p>
+            <p class ="people_points">Pontos<p class ="people_numbers" id="num_points"></p></p>
         </div>
 
         <div class=" col-md-4 col-lg-4 text-center">
             <img src="../images/avatar.png" height="142" width="142"/>
-            <p class ="people_level">Level1</p>
+            <p class ="people_level" id="num_level"></p>
         </div>
         <div class=" col-md-2 col-lg-2 text-center">
-           <p class ="people_points">Reportes<p class ="people_numbers">0</p></p>
+           <p class ="people_points">Reportes<p class ="people_numbers" id="num_reports"></p></p>
         </div>
         <div class=" col-md-2 col-lg-2 "></div>
     </div>
@@ -142,37 +142,44 @@
                 <tbody>
                 <tr>
                     <td class="profile_style">Nome</td>
-                    <td class="profile_style_response">Género</td>
+                    <td class="profile_style_response"> <p id="people_name"></p></td>
+                </tr>
+                <tr>
+                    <td class="profile_style">Género</td>
+                    <td class="profile_style_response" id="people_gender"></td>
                 </tr>
                 <tr>
                     <td class="profile_style">Data de nascimento</td>
-                    <td class="profile_style_response">06/23/2013</td>
+                    <td class="profile_style_response" id="people_birthday"></td>
                 </tr>
                 <tr>
                     <td class="profile_style">Localidade</td>
-                    <td class="profile_style_response">01/24/1988</td>
+                    <td class="profile_style_response" id="people_locality"></td>
+                </tr>
+                <tr>
+                    <td class="profile_style">Morada</td>
+                    <td class="profile_style_response" id="people_address"></td>
                 </tr>
                 <tr>
                     <td class="profile_style">Código-Postal</td>
-                    <td class="profile_style_response">01/24/1988</td>
+                    <td class="profile_style_response" id="people_cp"></td>
                 </tr>
                 <tr>
                     <td class="profile_style">Email</td>
-                    <td class="profile_style_response">01/24/1988</td>
+                    <td class="profile_style_response" id="people_email" text=""></td>
                 </tr>
-
                 <tr>
                 <tr>
                     <td class="profile_style">Telemóvel</td>
-                    <td class="profile_style_response">Female</td>
+                    <td class="profile_style_response" id="people_phone"></td>
                 </tr>
                 <tr>
                     <td class="profile_style">Trabalho</td>
-                    <td class="profile_style_response">Kathmandu,Nepal</td>
+                    <td class="profile_style_response" id="people_job"></td>
                 </tr>
                 <tr>
                     <td class="profile_style">Serviços</td>
-                    <td class="profile_style_response"><a href="mailto:info@support.com">info@support.com</a></td>
+                    <td class="profile_style_response" id="people_service"></td>
                 </tr>
                 </tbody>
             </table>

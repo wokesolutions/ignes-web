@@ -179,7 +179,7 @@ function logOut(){
             if (response.status === 200) {
                 localStorage.removeItem('token');
                 localStorage.removeItem('ignes_username');
-                window.location.href = "index.html";
+                window.location.href = "../index.html";
 
             }else{
                 console.log("Tratar do Forbidden")
@@ -337,10 +337,56 @@ function getProfile(){
     }).then(function(response) {
 
             if (response.status === 200) {
-                console.log(response.body);
+                response.json().then(function(data) {
+
+                    document.getElementById("num_level").innerHTML = data.user_level;
+                    document.getElementById("people_name").innerHTML = data.User;
+                    document.getElementById("people_email").innerHTML = data.user_email;
+
+                    if(data.useroptional_birth !== undefined)
+                        document.getElementById("people_birthday").innerHTML = data.useroptional_birth;
+                    else
+                        document.getElementById("people_birthday").innerHTML = "-";
+
+                    if(data.useroptional_locality !== undefined)
+                        document.getElementById("people_locality").innerHTML = data.useroptional_locality;
+                    else
+                        document.getElementById("people_locality").innerHTML = "-";
+
+                    if(data.useroptional_phone !== undefined)
+                        document.getElementById("people_phone").innerHTML = data.useroptional_phone;
+                    else
+                        document.getElementById("people_phone").innerHTML = "-";
+
+                    if(data.useroptional_address !== undefined)
+                        document.getElementById("people_address").innerHTML = data.useroptional_address;
+                    else
+                        document.getElementById("people_address").innerHTML = "-";
+
+                    if(data.useroptional_zip !== undefined)
+                       document.getElementById("people_cp").innerHTML = data.useroptional_zip;
+                    else
+                        document.getElementById("people_cp").innerHTML = "-";
+
+                    if(data.useroptional_gender !== undefined)
+                        document.getElementById("people_gender").innerHTML = data.useroptional_gender;
+                    else
+                        document.getElementById("people_gender").innerHTML = "-";
+
+                    if(data.useroptional_job !== undefined)
+                    document.getElementById("people_job").innerHTML = data.useroptional_job;
+                    else
+                        document.getElementById("people_job").innerHTML = "-";
+
+                    if(useroptional_skills !== undefined)
+                    document.getElementById("people_service").innerHTML = data.useroptional_skills;
+                    else
+                        document.getElementById("people_service").innerHTML = "-";
+
+                });
 
             }else{
-                console.log("Tratar do Forbidden")
+                console.log("Tratar do Forbidden");
             }
 
 
