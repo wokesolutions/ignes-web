@@ -7,6 +7,8 @@ import 'react-rangeslider/lib/index.css';
 var img;
 var myStorage = window.localStorage;
 
+var URL_BASE = "https://maria-dot-hardy-scarab-200218.appspot.com"
+
 class RegWorker extends React.Component  {
     register(){
         var username = document.getElementById("username").value;
@@ -19,7 +21,7 @@ class RegWorker extends React.Component  {
         if (password === confirmation) {
             if (email.indexOf("@") > -1) {
                 if (password.toString().length > 5) {
-                    fetch('https://hardy-scarab-200218.appspot.com/api/register/worker', {
+                    fetch(URL_BASE + '/api/register/worker', {
                         method: 'POST',
                         headers: {
                             'Accept': 'application/json',
@@ -148,7 +150,7 @@ class RegUser extends React.Component {
         if (password === confirmation) {
             if (email.indexOf("@") > -1) {
                 if (password.toString().length > 5) {
-                    fetch('https://hardy-scarab-200218.appspot.com/api/register/user', {
+                    fetch(URL_BASE + '/api/register/user', {
                         method: 'POST',
                         headers: {
                             'Accept': 'application/json',
@@ -283,7 +285,7 @@ class RegCompany extends React.Component {
         console.log(isFireStation);
 
         if(password === confirmation && email.indexOf("@") > -1) {
-            fetch('https://hardy-scarab-200218.appspot.com/api/register/org', {
+            fetch(URL_BASE + '/api/register/org', {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -466,7 +468,7 @@ class LogIn extends React.Component {
 
             /* axios({
                  method: 'post',
-                 url: 'https://hardy-scarab-200218.appspot.com/api/login',
+                 url: URL_BASE + '/api/login',
                  data: JSON.stringify({
                      username: logUsername,
                      password: logPassword}
@@ -494,7 +496,7 @@ class LogIn extends React.Component {
 
              });*/
 
-            fetch('https://hardy-scarab-200218.appspot.com/api/login', {
+            fetch(URL_BASE + '/api/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -904,7 +906,7 @@ function regAccountWorker(){
 }
 
 function init(){
-    fetch('https://hardy-scarab-200218.appspot.com/api/verifytoken', {
+    fetch(URL_BASE + '/api/verifytoken', {
         method: 'GET',
         headers: {
             'Accept': 'application/json',
