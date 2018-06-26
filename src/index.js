@@ -301,7 +301,7 @@ class RegCompany extends React.Component {
                     org_address: address,
                     org_locality: locality,
                     org_zip: zip,
-                    org_firestation: isFireStation
+                    org_isfirestation: isFireStation
                 })
             })
             ReactDOM.render(<LogIn/> , document.getElementById("root"));
@@ -781,16 +781,7 @@ class InitPage extends React.Component {
                 <div className ="row">
                     <div className = "col-lg-2 col-sm-3 mx-auto text-center"></div>
 
-                    <div className = "col-lg-4 col-sm-3 mx-auto text-center">
-                        <button className ="btn btn-light flame " id="button_flame" onClick={regAccountUser}>
-                            <img src="images/5.svg" className="img-flame"alt="Cidadao"/>
-                        </button>
-                        <p className="texticon" >Cidadão</p>
-                        <p className="text">Caso seja um Membro da Comunidade de Cidadãos</p>
-                    </div>
-
-
-                    <div className = "col-lg-4 col-sm-3 mx-auto text-center">
+                    <div className = "col-lg-8 col-sm-3 mx-auto text-center">
                         <button className ="btn btn-light flame" id="button_flame" onClick={regAccountCom}>
                             <img src="images/8.svg" className="img-flame" alt="Empresa"/>
                         </button>
