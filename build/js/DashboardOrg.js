@@ -6,6 +6,7 @@ var feedCursor;
 var commentsCursor;
 var current_position = "map_variable";
 var infowindow = new google.maps.InfoWindow();
+var idReportCurr;
 var currentLoc ={
     center: {lat: 38.661148, lng: -9.203075},
     zoom: 18
@@ -73,13 +74,13 @@ function getCurrentLocation() {
             var mapElement = document.getElementById('map');
             map = new google.maps.Map(mapElement, currentLoc);
 
-            getMarkers(5);
+            getMarkers(15);
         })
     }else {
         var mapElement = document.getElementById('map');
         map = new google.maps.Map(mapElement, currentLoc);
 
-        getMarkers(5);
+        getMarkers(15);
     }
 
     return currentLoc;
@@ -292,6 +293,7 @@ function fillMap(reports, cursor, zone){
 }
 
 function getInfo(idReport, i){
+    idReportCurr = idReport;
     fetch(URL_BASE + '/api/report/thumbnail/' + idReport, {
         method: 'GET',
         headers: {
@@ -788,8 +790,26 @@ function getAvailableWorker(cursor){
                                 var i;
                                 console.log(data.length);
                                 for(i = 0; i < data.length; i++){
-                                    document.getElementById("dropdown").append(data[i].Worker);
-
+                                    var email = data[i].Worker;
+                                    $(".dropdown-menu").append("<option style='border: 3px #3b4956 solid' value=" + email + "><a href='#'>" + email + "</a></option>");
+                                    $(".dropdown-menu").children().last().click(function() {
+                                        fetch(URL_BASE + "/api/org/givetask", {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                                'Authorization': localStorage.getItem('token')
+                                            },
+                                            body: JSON.stringify({
+                                                email: email,
+                                                report: idReportCurr,
+                                                indications: "Por favor, tenha cuidado com a lenha."
+                                            })
+                                        }).then(function() {
+                                            alert("Tarefa atribuida com sucesso");
+                                        }).catch(function(err) {
+                                            console.log('Fetch Error', err);
+                                        });;
+                                    });
                                 }
 
                             }else{
